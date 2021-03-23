@@ -16,6 +16,7 @@ build/*.tar.gz
 mofacts/settings.json
 .tags*
 mofacts/node_modules
+*node_modules*
 docker-out/
 \#*\#
 *~
