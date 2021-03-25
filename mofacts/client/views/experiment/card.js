@@ -2496,7 +2496,6 @@ function processUserTimesLog(userTimesLogs) {
         if (unitHasOption(currUnit, "assessmentsession")) {
             engine = createScheduleUnit(extensionData);
             Session.set("sessionType","assessmentsession");
-            console.log("schedule:",engine.getSchedule());
         }
         else if (unitHasOption(currUnit, "learningsession")) {
             engine = createModelUnit(extensionData);
@@ -2612,7 +2611,6 @@ function processUserTimesLog(userTimesLogs) {
             //Update what we know about the session
             //Note that the schedule unit engine will see and use this
             getUserProgress().currentSchedule = schedule;
-            Session.set("currentUnitNumber", unit); //TODO: This seems unnecessary, we should only care on unit-end or instructions (unit start)
             unsetTrialSessionVariablesAndClearScrollList();
         }
 
@@ -2636,7 +2634,6 @@ function processUserTimesLog(userTimesLogs) {
 
             Session.set("clusterIndex",           cardIndex);
             Session.set("questionIndex",          entry.questionIndex);
-            Session.set("currentUnitNumber",      entry.currentUnit);//TODO: This seems unnecessary, we should only care on unit-end or instructions (unit start)
             Session.set("currentDisplayEngine",   entry.selectedDisplay);
             Session.set("currentQuestionPart2",   entry.selectedQuestionPart2);
             Session.set("currentAnswer",          entry.selectedAnswer);

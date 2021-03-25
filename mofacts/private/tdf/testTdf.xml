@@ -46,6 +46,7 @@
 		<unitinstructions>Here comes the testing learning session.</unitinstructions>
 		<unitname>Model Unit</unitname>
 		<learningsession>
+			<maxTrials>2</maxTrials>
 			<clusterlist>1-1</clusterlist>
 			<calculateProbability><![CDATA[
           function mul(m1, m2) {
