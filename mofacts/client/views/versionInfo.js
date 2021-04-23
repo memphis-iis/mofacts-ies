@@ -1,10 +1,10 @@
 //NOTE: This file will be out of date on any machine except the one that last created the deployment tarball
 Session.set("versionInfo",
 {
-"commitID":"8d271fe72691d57f4f47bb142091e93bd9d228e1",
-"buildTimestamp":"Sun Mar  7 15:31:57 CST 2021",
+"commitID":"6fca4c5c21d266dd0470e2a9a9ea102a48e6449b",
+"buildTimestamp":"Fri Apr 23 12:14:19 CDT 2021",
 "buildersUsername":"Andrew Tackett",
-"branch":"master",
+"branch":"mofacts3Temp",
 "repoURL":"git@github.com:memphis-iis/mofacts-ies.git"
 }
 );
