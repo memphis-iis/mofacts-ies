@@ -141,9 +141,9 @@ function defaultUnitEngine(extensionData) {
                 answer = answer.replace(/\./g,'_');
                 let syllableArray = cachedSyllables.data[answer].syllables;
                 return {syllableArray,displaySyllableIndices};
-            }    
+            }
         },
-    
+
         replaceClozeWithSyllables: function(question,currentAnswerSyllables, origAnswer){
             console.log("replaceClozeWithSyllables1",question,currentAnswerSyllables, origAnswer);
             if(typeof(question) === "undefined"){
@@ -152,7 +152,7 @@ function defaultUnitEngine(extensionData) {
                     clozeMissingSyllables: undefined
                 }
             }
-    
+
             let clozeAnswer = "";
             let clozeMissingSyllables = ""
             let syllablesArray = currentAnswerSyllables.syllableArray;
@@ -160,7 +160,7 @@ function defaultUnitEngine(extensionData) {
             let reconstructedAnswer = "";
             let clozeAnswerOnlyUnderscores = "";
             let clozeAnswerNoUnderscores = "";
-    
+
             for(let index in syllablesArray){
                 index = parseInt(index);
                 if(syllableIndices.indexOf(index) != -1){
@@ -178,7 +178,7 @@ function defaultUnitEngine(extensionData) {
                         clozeMissingSyllables += syllablesArray[index];
                     }
                 }
-    
+
                 reconstructedAnswer += syllablesArray[index];
                 let nextChar = reconstructedAnswer.length;
                 while(origAnswer.charAt(nextChar) == " "){
@@ -195,7 +195,7 @@ function defaultUnitEngine(extensionData) {
             clozeQuestionParts.splice(1,1);
             clozeQuestionParts.splice(1,0,clozeAnswerNoUnderscores.trim());
             clozeQuestionParts[2] = clozeAnswerOnlyUnderscores + " " + clozeQuestionParts[2];
-    
+
             // If our third cloze part begins with an underscore,
             // our second cloze part should be our syllables, so
             // if the answer sans underscores doesn't end in whitespace,
@@ -206,7 +206,7 @@ function defaultUnitEngine(extensionData) {
             }
 
             let clozeQuestion = question.replace(/([_]+[ ]?)+/,clozeAnswer + " ");
-            
+
             return { clozeQuestion, clozeMissingSyllables, clozeQuestionParts };
         },
 
@@ -219,7 +219,7 @@ function defaultUnitEngine(extensionData) {
             //For now this distinguishes model engine from schedule engine, which doesn't do syllable replacement
             if(prob){
                 currentAnswerSyllables = this.getSubClozeAnswerSyllables(currentStimAnswer,prob.probFunctionsParameters.hintsylls,this.cachedSyllables);
-                
+
                 if(currentAnswerSyllables){
                     let {clozeQuestion,clozeMissingSyllables,clozeQuestionParts:cQuestionParts} = this.replaceClozeWithSyllables(
                         currentQuestion,currentAnswerSyllables,currentStimAnswer);
@@ -231,7 +231,7 @@ function defaultUnitEngine(extensionData) {
                         currentQuestionPart2,currentAnswerSyllables,currentStimAnswer);
                     currentQuestionPart2 = clozeQuestion2; //TODO we should use clozeMissingSyllables2 probably, doubtful that syllables will work with two part questions for now
                 }
-            }     
+            }
 
             console.log("setUpCardQuestionSyllables2:",currentQuestion,currentQuestionPart2,currentAnswerSyllables,clozeQuestionParts,currentAnswer);
             return {currentQuestion,currentQuestionPart2,currentAnswerSyllables,clozeQuestionParts,currentAnswer};
@@ -250,13 +250,13 @@ function defaultUnitEngine(extensionData) {
                 }
             }
             Session.set("originalDisplay", JSON.parse(JSON.stringify(currentDisplay)));
-    
+
             let currentQuestion = currentDisplay.text || currentDisplay.clozeText;
             let currentQuestionPart2 = undefined;
             let currentStimAnswer = getStimAnswer(cardIndex, whichStim);
             Session.set("originalAnswer",currentStimAnswer);
             currentStimAnswer = currentStimAnswer.toLowerCase();
-    
+
             //If we have a dual prompt question populate the spare data field
             if(currentQuestion && currentQuestion.indexOf("|") != -1){
                 var prompts = currentQuestion.split("|");
@@ -265,7 +265,7 @@ function defaultUnitEngine(extensionData) {
             }
             Session.set("originalQuestion",currentQuestion);
             Session.set("originalQuestion2",currentQuestionPart2);
-            
+
             let currentAnswerSyllables, clozeQuestionParts, currentAnswer;
 
             ({currentQuestion,currentQuestionPart2,currentAnswerSyllables,clozeQuestionParts,currentAnswer} = this.setUpCardQuestionSyllables(currentQuestion,currentQuestionPart2,currentStimAnswer,prob));
@@ -277,13 +277,13 @@ function defaultUnitEngine(extensionData) {
             Session.set("currentAnswer",currentAnswer);
             Session.set("clozeQuestionParts",clozeQuestionParts);
             Session.set("currentQuestionPart2",currentQuestionPart2);
-    
+
             if(!!(currentDisplay.text)){
                 currentDisplay.text = currentQuestion;
             }else if(!!(currentDisplay.clozeText)){
                 currentDisplay.clozeText = currentQuestion;
             }
-    
+
             Session.set("currentDisplayEngine",currentDisplay);
         }
     };
@@ -564,7 +564,7 @@ function modelUnitEngine() {
         4.57174* p.intbs * Math.log(1 + p.stimSuccessCount + p.stimFailureCount) +
         0.74734* p.intbs * Math.log(1 + p.responseSuccessCount + p.responseFailureCount);
         p.probability = 1.0 / (1.0 + Math.exp(-p.y));  // Actual probability
-        
+
         return p;
     }
 
@@ -620,7 +620,7 @@ function modelUnitEngine() {
         p.stimResponseText = stripSpacesAndLowerCase(answerText); //Yes, lowercasing here is redundant. TODO: fix/cleanup
         let curStimFile = getCurrentStimName().replace(/\./g,'_');
         answerText = answerText.replace(/\./g,'_');
-        
+
         if(probFunctionHasHintSylls){
             if(!this.cachedSyllables.data || !this.cachedSyllables.data[answerText]){
                 console.log("no cached syllables for: " + curStimFile + "|" + answerText);
@@ -720,14 +720,14 @@ function modelUnitEngine() {
     }
 
     function findMinProbDistCard(cards,probs){
-      var currentMin = 1.00001; //Magic number to indicate greater than highest possible distance to start
+      var currentMin = 50.0; //Magic number to indicate greater than highest possible distance to start
       var indexToReturn = 0;
 
       for (var i = probs.length - 1; i >= 0; --i) {
           var prob = probs[i];
           var card = cards[prob.cardIndex];
           var parameters = card.stims[prob.stimIndex].parameter;
-          var optimalProb = parameters[1];
+          var optimalProb = Math.log(parameters[1]/(1-parameters[1]));
           if(!optimalProb){
             //console.log("NO OPTIMAL PROB SPECIFIED IN STIM, DEFAULTING TO 0.90");
             optimalProb = 0.90;
@@ -735,7 +735,7 @@ function modelUnitEngine() {
           //console.log("!!!parameters: " + JSON.stringify(parameters) + ", optimalProb: " + optimalProb);
 
           if (card.canUse && card.trialsSinceLastSeen > 1) {
-              var dist = Math.abs(prob.probability - optimalProb)
+              var dist = Math.abs(Math.log(prob.probability/(1-prob.probability)) - optimalProb)
 
             //  console.log(dist)
               // Note that we are checking stim probability
@@ -974,7 +974,7 @@ function modelUnitEngine() {
                 if(responseText && responseText in cardProbabilities.responses){
                     console.log("Response is", responseText, displayify(cardProbabilities.responses[responseText]));
                 }
-                
+
                 console.log("<<<END   METRICS<<<<<<<");
             }
 
@@ -1150,30 +1150,30 @@ function modelUnitEngine() {
 function scheduleUnitEngine(){
     return {
         unitType: "schedule",
-    
+
         initImpl: function() {
             //Nothing currently
         },
-    
+
         getSchedule: function() {
             //Retrieve current schedule
             var progress = getUserProgress();
-    
+
             var unit = getCurrentUnitNumber();
             var schedule = null;
             if (progress.currentSchedule && progress.currentSchedule.unitNumber == unit) {
                 schedule = progress.currentSchedule;
             }
-    
+
             //Lazy create save if we don't have a correct schedule
             if (schedule === null) {
                 console.log("CREATING SCHEDULE, showing progress");
                 console.log(progress);
-    
+
                 var file = getCurrentTdfFile();
                 var setSpec = file.tdfs.tutor.setspec[0];
                 var currUnit = file.tdfs.tutor.unit[unit];
-    
+
                 schedule = AssessmentSession.createSchedule(setSpec, unit, currUnit);
                 if (!schedule) {
                     //There was an error creating the schedule - there's really nothing
@@ -1185,58 +1185,58 @@ function scheduleUnitEngine(){
                     alert("There is an issue with the TDF - experiment cannot continue");
                     throw new Error("There is an issue with the TDF - experiment cannot continue");
                 }
-    
+
                 //We save the current schedule and also log it to the UserTime collection
                 progress.currentSchedule = schedule;
-    
+
                 recordUserTime("schedule", {
                     unitname: _.display(currUnit.unitname),
                     unitindex: unit,
                     schedule: schedule
                 });
             }
-    
+
             //Now they can have the schedule
             return schedule;
         },
-    
+
         selectNextCard: function() {
             let questionIndex = Session.get("questionIndex");
             let questInfo = this.getSchedule().q[questionIndex];
             let curClusterIndex = questInfo.clusterIndex;
             let curStimIndex = questInfo.whichStim;
-    
+
             //Set current Q/A info, type of test (drill, test, study), and then
             //increment the session's question index number
             setCurrentClusterIndex(curClusterIndex);
-    
+
             this.setUpCardQuestionAndAnswerGlobals(curClusterIndex, curStimIndex, undefined);
-    
+
             Session.set("testType", questInfo.testType);
             Session.set("questionIndex", questionIndex + 1);
             Session.set("showOverlearningText", false);  //No overlearning in a schedule
-    
+
             console.log("SCHEDULE UNIT card selection => ",
                 "cluster-idx-unmapped:", curClusterIndex,
                 "whichStim:", curStimIndex
             );
-    
+
             return curClusterIndex;
         },
-    
+
         findCurrentCardInfo: function() {
             //selectNextCard increments questionIndex after setting all card
             //info, so we need to use -1 for this info
             return this.getSchedule().q[Session.get("questionIndex") - 1];
         },
-    
+
         cardSelected: function(selectVal, resumeData) {
             //Nothing currently
         },
-    
+
         createQuestionLogEntry: function() {
             var questInfo = this.findCurrentCardInfo();
-    
+
             try {
                 return {
                     'whichStim': questInfo.whichStim
@@ -1246,13 +1246,13 @@ function scheduleUnitEngine(){
                 console.log(e);
                 throw e;
             }
-    
+
         },
-    
+
         cardAnswered: function(wasCorrect, resumeData) {
             //Nothing currently
         },
-    
+
         unitFinished: function() {
             var questionIndex = Session.get("questionIndex");
             var unit = getCurrentUnitNumber();
@@ -1260,7 +1260,7 @@ function scheduleUnitEngine(){
             if (unit < getCurrentTdfFile().tdfs.tutor.unit.length) {
                 schedule = this.getSchedule();
             }
-    
+
             if (schedule && questionIndex < schedule.q.length) {
                 return false; // have more
             }
@@ -1269,4 +1269,4 @@ function scheduleUnitEngine(){
             }
         }
     }
-} 
+}
